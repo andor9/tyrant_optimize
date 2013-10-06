@@ -1489,7 +1489,9 @@ struct PerformAttack
         std::string reduced_desc;
         unsigned reduced_dmg(0);
         unsigned armored_value(def_card.m_armored);
-        if(armored_value == 0 && fd->effect == Effect::photon_shield && def_status->m_player == (fd->optimization_mode == OptimizationMode::defense ? 0 : 1))
+        if(armored_value == 0
+        && fd->effect == Effect::photon_shield
+        && def_status->m_player == (fd->optimization_mode == OptimizationMode::defense ? 0U : 1U))
         {
             armored_value = 2;
         }
