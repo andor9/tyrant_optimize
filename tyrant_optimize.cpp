@@ -1063,7 +1063,7 @@ void usage(int argc, char** argv)
         "\n"
         "Flags:\n"
         "  -A <achievement>: optimize for the achievement specified by either id or name.\n"
-        "  -e <effect>: set the battleground effect. effect is automatically set for quests.\n"
+        "  -e <effect>: set the battleground effect. effect is automatically set for quests and raids.\n"
         "  -r: the attack deck is played in order instead of randomly (respects the 3 cards drawn limit).\n"
         "  -s: use surge (default is fight).\n"
         "  -t <num>: set the number of threads, default is 4.\n"

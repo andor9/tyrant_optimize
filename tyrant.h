@@ -1,7 +1,7 @@
 #ifndef TYRANT_H_INCLUDED
 #define TYRANT_H_INCLUDED
 
-#define TYRANT_OPTIMIZER_VERSION "1.1.4"
+#define TYRANT_OPTIMIZER_VERSION "1.1.5"
 
 #include <string>
 #include <set>
@@ -106,6 +106,7 @@ enum Effect {
     toxic,
     haunt,
     united_front,
+    harsh_conditions,
     num_effects
 };
 
