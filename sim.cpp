@@ -1870,7 +1870,7 @@ template<>
 inline bool skill_predicate<rally>(Field* fd, CardStatus* src, CardStatus* c, const SkillSpec& s)
 {
     const auto& mod = std::get<4>(s);
-    return(can_attack(c) && !c->m_sundered &&  // (fd->tapi == c->m_player ? is_active(c) && !is_attacking_or_has_attacked(c) : is_active_next_turn(c)));
+    return(can_attack(c) && !c->m_sundered &&
         (src->m_player != c->m_player || mod == SkillMod::on_death ? (fd->tapi == c->m_player ? is_active(c) && !is_attacking_or_has_attacked(c) : is_active_next_turn(c)) :
          mod == SkillMod::on_attacked ? is_active_next_turn(c) :
          is_active(c) && !is_attacking_or_has_attacked(c)));
@@ -1900,8 +1900,8 @@ template<>
 inline bool skill_predicate<weaken>(Field* fd, CardStatus* src, CardStatus* c, const SkillSpec& s)
 {
     const auto& mod = std::get<4>(s);
-    return(can_act(c) && !c->m_immobilized && attack_power(c) > 0 &&  // (fd->tapi == c->m_player ? is_active(c) && !is_attacking_or_has_attacked(c) : is_active_next_turn(c)));
-            (mod == SkillMod::on_attacked ? is_active(c) && c->m_index > fd->current_ci :
+    return(can_act(c) && !c->m_immobilized && !c->m_stunned && attack_power(c) > 0
+        && (mod == SkillMod::on_attacked ? is_active(c) && c->m_index > fd->current_ci :
              mod == SkillMod::on_death ? c->m_index >= src->m_index && (fd->tapi != src->m_player ? is_active(c) : is_active_next_turn(c)) :
              is_active(c) || is_active_next_turn(c)));
 }
@@ -2034,7 +2034,10 @@ inline unsigned select_fast(Field* fd, CardStatus* src_status, const std::vector
 {
     if(std::get<2>(s) == allfactions)
     {
-        return(fd->make_selection_array(cards.begin(), cards.end(), [fd, src_status, s, is_helpful_skill](CardStatus* c){return(!(is_helpful_skill && c->m_phased) && skill_predicate<skill_id>(fd, src_status, c, s));}));
+        return(fd->make_selection_array(cards.begin(), cards.end(),
+                [fd, src_status, s, is_helpful_skill](CardStatus* c) {
+                    return(!(is_helpful_skill && c->m_phased) && skill_predicate<skill_id>(fd, src_status, c, s));
+                }));
     }
     else
     {
@@ -2347,7 +2350,10 @@ void perform_backfire(Field* fd, CardStatus* src_status, const SkillSpec& s)
 void perform_infuse(Field* fd, CardStatus* src_status, const SkillSpec& s)
 {
     const auto &cards = boost::join(fd->tap->assaults.m_indirect, fd->tip->assaults.m_indirect);
-    if(fd->make_selection_array(cards.begin(), cards.end(), [fd, s](CardStatus* c){return(skill_predicate<infuse>(fd, &fd->tap->commander, c, s));}) > 0)
+    if(fd->make_selection_array(cards.begin(), cards.end(),
+                                [fd, s](CardStatus* c) {
+                                    return(skill_predicate<infuse>(fd, &fd->tap->commander, c, s));
+                                }) > 0)
     {
         _DEBUG_SELECTION("%s", skill_names[infuse].c_str());
         CardStatus* c(select_interceptable(fd, src_status, fd->rand(0, fd->selection_array.size() - 1)));

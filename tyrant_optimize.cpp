@@ -614,25 +614,26 @@ void hill_climbing(unsigned num_iterations, Deck* d1, Process& proc, std::map<si
         }
         if(!card_marks.count(-1))
         {
-            for(const Card* commander_candidate: proc.cards.player_commanders)
-            {
+            /* Evaluate all commanders for this deck, first. */
+            for(const Card* commander_candidate: proc.cards.player_commanders) {
                 // Various checks to check if the card is accepted
                 assert(commander_candidate->m_type == CardType::commander);
                 if(commander_candidate->m_name == best_commander->m_name) { continue; }
                 // Place it in the deck
                 d1->commander = commander_candidate;
                 auto &&cur_deck = d1->card_ids<std::multiset<unsigned>>();
-                if(evaluated_decks.count(cur_deck) == 0)
-                {
+                if(evaluated_decks.count(cur_deck) == 0) {
                     deck_cost = get_deck_cost(d1, proc.cards);
+
                     if(deck_cost > fund) { continue; }
+
                     // Evaluate new deck
                     auto compare_results = proc.compare(num_iterations, best_score.points);
                     current_score = compute_score(compare_results, proc.factors);
                     evaluated_decks[cur_deck] = compare_results.second;
+
                     // Is it better ?
-                    if(current_score.points > best_score.points)
-                    {
+                    if(current_score.points > best_score.points) {
                         // Then update best score/commander, print stuff
                         best_score = current_score;
                         best_commander = commander_candidate;
@@ -641,9 +642,7 @@ void hill_climbing(unsigned num_iterations, Deck* d1, Process& proc, std::map<si
                         print_score_info(compare_results, proc.factors);
                         print_deck_inline(deck_cost, best_score, best_commander, best_cards, false);
                     }
-                }
-                else
-                {
+                } else {
                     skipped_simulations += evaluated_decks[cur_deck];
                 }
             }

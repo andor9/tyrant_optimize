@@ -23,8 +23,7 @@ void partial_shuffle(RandomAccessIterator first, RandomAccessIterator middle,
     distr_t D;
     diff_t m = middle - first;
     diff_t n = last - first;
-    for (diff_t i = 0; i < m; ++i)
-    {
+    for (diff_t i = 0; i < m; ++i) {
         std::swap(first[i], first[D(g, param_t(i, n-1))]);
     }
 }
