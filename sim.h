@@ -156,6 +156,7 @@ struct CardStatus
     unsigned m_protected;
     unsigned m_rallied;
     unsigned m_weakened;
+    unsigned m_valor;
     CardStep m_step;
     unsigned m_enhanced_value[num_skills];
     unsigned m_skill_cd[num_skills];

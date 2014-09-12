@@ -94,6 +94,7 @@ inline void CardStatus::set(const Card& card)
     m_protected = 0;
     m_rallied = 0;
     m_weakened = 0;
+    m_valor = 0;
     m_step = CardStep::none;
     std::memset(m_enhanced_value, 0, sizeof m_enhanced_value);
     std::memset(m_skill_cd, 0, sizeof m_skill_cd);
@@ -101,7 +102,7 @@ inline void CardStatus::set(const Card& card)
 //------------------------------------------------------------------------------
 inline int attack_power(CardStatus* att)
 {
-    return(safe_minus(att->m_card->m_attack + att->m_berserk + att->m_rallied, att->m_weakened + att->m_corroded_weakened));
+    return(safe_minus(att->m_card->m_attack + att->m_berserk + att->m_rallied + att->m_valor, att->m_weakened + att->m_corroded_weakened));
 }
 //------------------------------------------------------------------------------
 std::string skill_description(const Cards& cards, const SkillSpec& s)
@@ -167,6 +168,7 @@ std::string CardStatus::description()
             if(m_rallied > 0) { att_desc += "+" + to_string(m_rallied) + "(rallied)"; }
             if(m_weakened > 0) { att_desc += "-" + to_string(m_weakened) + "(weakened)"; }
             if(m_corroded_weakened > 0) { att_desc += "-" + to_string(m_corroded_weakened) + "(corroded)"; }
+            if(m_valor > 0) { att_desc += "+" + to_string(m_valor) + "(valor)"; }
             if(!att_desc.empty()) { desc += att_desc + "=" + to_string(attack_power(this)); }
         }
     case CardType::structure:
@@ -667,6 +669,7 @@ void turn_end_phase(Field* fd)
             status.m_weakened = 0;
             status.m_step = CardStep::none;
             status.m_inhibited = 0;
+            status.m_valor = 0;
             unsigned poison_dmg = safe_minus(status.m_poisoned, status.protected_value());
             if(poison_dmg > 0)
             {
@@ -1010,6 +1013,18 @@ inline bool skill_predicate<jam>(Field* fd, CardStatus* src, CardStatus* dst, co
     return can_act(dst) && is_active_next_turn(dst);
 }
 
+// valor "targets" opposing assault if my attack is lower than their attack
+template<>
+inline bool skill_predicate<valor>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s) {
+    Storage<CardStatus>& def_assaults(fd->tip->assaults);
+    if (alive_assault(def_assaults, fd->current_ci))
+    {
+        bool is_opposite = (dst == &fd->tip->assaults[fd->current_ci]);
+        return (is_opposite && (attack_power(src) < attack_power(dst)));
+    }
+    return false;
+}
+
 template<>
 inline bool skill_predicate<overload>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
 {
@@ -1117,6 +1132,12 @@ inline void perform_skill<weaken>(Field* fd, CardStatus* src, CardStatus* dst, c
     dst->m_weakened += s.x;
 }
 
+template<>
+inline void perform_skill<valor>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
+{
+    src->m_valor += s.x;
+}
+
 template<unsigned skill_id>
 inline unsigned select_fast(Field* fd, CardStatus* src_status, const std::vector<CardStatus*>& cards, const SkillSpec& s)
 {
@@ -1182,6 +1203,9 @@ template<> std::vector<CardStatus*>& skill_targets<strike>(Field* fd, CardStatus
 { return(skill_targets_hostile_assault(fd, src_status)); }
 
 template<> std::vector<CardStatus*>& skill_targets<weaken>(Field* fd, CardStatus* src_status)
+{ return(skill_targets_hostile_assault(fd, src_status)); }
+
+template<> std::vector<CardStatus*>& skill_targets<valor>(Field* fd, CardStatus* src_status)
 { return(skill_targets_hostile_assault(fd, src_status)); }
 
 template<> std::vector<CardStatus*>& skill_targets<siege>(Field* fd, CardStatus* src_status)
@@ -1265,6 +1289,17 @@ void perform_targetted_allied_fast(Field* fd, CardStatus* src_status, const Skil
     }
 }
 
+template<Skill skill_id>
+void perform_self_opposing(Field* fd, CardStatus* src_status, const SkillSpec& s)
+{
+    select_targets<skill_id>(fd, src_status, s);
+    // assuming valor cannot be inhibited or evaded
+    for (CardStatus *c: fd->selection_array)
+    {
+        check_and_perform_skill<skill_id>(fd, src_status, c, s, false);
+    }
+}
+
 //------------------------------------------------------------------------------
 void fill_skill_table()
 {
@@ -1279,4 +1314,5 @@ void fill_skill_table()
     skill_table[siege] = perform_targetted_hostile_fast<siege>;
     skill_table[strike] = perform_targetted_hostile_fast<strike>;
     skill_table[weaken] = perform_targetted_hostile_fast<weaken>;
+    skill_table[valor] = perform_self_opposing<valor>;
 }
