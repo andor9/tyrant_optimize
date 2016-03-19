@@ -16,6 +16,23 @@
 #include "cards.h"
 #include "deck.h"
 
+// trim from start
+static inline std::string &ltrim(std::string &s) {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return s;
+}
+
+// trim from end
+static inline std::string &rtrim(std::string &s) {
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        return s;
+}
+
+// trim from both ends
+static inline std::string &trim(std::string &s) {
+        return ltrim(rtrim(s));
+}
+
 template<typename Iterator, typename Functor> Iterator advance_until(Iterator it, Iterator it_end, Functor f)
 {
     while(it != it_end)
@@ -310,6 +327,7 @@ unsigned read_card_abbrs(Cards& all_cards, const std::string& filename)
         {
             std::string abbr_string;
             getline(abbr_file, abbr_string);
+            trim(abbr_string);
             ++num_line;
             if(abbr_string.size() == 0 || strncmp(abbr_string.c_str(), "//", 2) == 0)
             {
@@ -370,6 +388,7 @@ unsigned load_custom_decks(Decks& decks, Cards& all_cards, const std::string & f
         {
             std::string deck_string;
             getline(decks_file, deck_string);
+            trim(deck_string);
             ++num_line;
             if(deck_string.size() == 0 || strncmp(deck_string.c_str(), "//", 2) == 0)
             {
@@ -462,6 +481,7 @@ void read_owned_cards(Cards& all_cards, std::map<unsigned, unsigned>& owned_card
     {
         std::string card_spec;
         getline(owned_file, card_spec);
+        trim(card_spec);
         ++num_line;
         if(card_spec.size() == 0 || strncmp(card_spec.c_str(), "//", 2) == 0)
         {

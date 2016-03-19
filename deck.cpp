@@ -290,6 +290,24 @@ void Deck::set_vip_cards(const std::string& deck_string)
     }
 }
 
+void Deck::set_allowed_candidates(const std::string& deck_string)
+{
+    auto && id_marks = string_to_ids(all_cards, deck_string, "allowed-candidates");
+    for (const auto & cid : id_marks.first)
+    {
+        allowed_candidates.insert(cid);
+    }
+}
+
+void Deck::set_disallowed_candidates(const std::string& deck_string)
+{
+    auto && id_marks = string_to_ids(all_cards, deck_string, "disallowed-candidates");
+    for (const auto & cid : id_marks.first)
+    {
+        disallowed_candidates.insert(cid);
+    }
+}
+
 void Deck::set_given_hand(const std::string& deck_string)
 {
     auto && id_marks = string_to_ids(all_cards, deck_string, "hand");
