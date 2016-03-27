@@ -1,0 +1,13 @@
+// Siege forts
+CS: Corrosive Spore
+LC: Lightning Cannon
+DF: Death Factory
+IA: Inspiring Altar
+MT: Mortar Tower
+
+// Defense forts
+TC: Tesla Coil
+MF: Minefield
+FA: Foreboding Archway
+IB: Illuminary Blockade
+FF: Forcefield

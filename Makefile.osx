@@ -3,12 +3,13 @@ SRCS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp,obj/%.o,$(SRCS))
 INCS := $(wildcard *.h)
 
-CPPFLAGS := -Wall -Werror -std=c++11 -stdlib=libc++ -O3 -I/usr/local/include -Wno-deprecated-register -DNDEBUG
+CPPFLAGS := -Wall -Wno-unused-local-typedefs -Werror -std=c++11 -stdlib=libc++ -O3 -I/usr/local/include -Wno-deprecated-register -DNDEBUG
 LDFLAGS := lib/libboost_system-mt.a lib/libboost_thread-mt.a lib/libboost_filesystem-mt.a lib/libboost_regex-mt.a -L/usr/local/lib -Bstatic
 
 all: $(MAIN)
 
 obj/%.o: %.cpp ${INCS}
+	mkdir -p obj
 	$(CXX) $(CPPFLAGS) -o $@ -c $<
 
 $(MAIN): $(OBJS)

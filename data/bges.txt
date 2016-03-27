@@ -1,0 +1,89 @@
+// Guild War BGEs
+Inspired: Rally all 3
+Blightblast: Enfeeble all 3
+Bombing Run: Strike all 3
+Triage: Heal all 4
+Charged Up: Overload 3
+Combined Arms: Rally+Enfeeble+Strike all 1
+Blitzkrieg: Rush
+Paladin's Presence: Protect all 3
+Viral Warfare: Enhance all Poison 3
+Progenitor Tech: Heal+Protect+Rally+Enfeeble+Strike all 1
+Diminisher: Sunder all 2
+Divine Blessing: Heal+Rally all 2
+
+// Some other BGEs
+Soothing Chant: Heal all 2
+
+// Conquest Zones
+Andar Quarantine: Evolve 2 Pierce Rupture
+Baron's Claw Labs: Enhance all Poison 3
+Borean Forges: Fortification
+Brood Nest: Enfeeble all 3
+Cleave Rock: Enhance all Berserk 3
+Elder Port: Evolve 2 Siege Mortar
+Enclave Landing: Enhance all Legion 2
+Infested Depot: Enhance all Leech 3
+Jotun's Pantheon: Protect all 3
+Magma Foundry: Strike all 3
+Malort's Den: Evolve 2 Poison Venom
+Mech Graveyard: Enhance all Counter 3
+Norhaven: Enhance all Evade 3
+Phobos Station: Strike+Siege all 2
+Red Maw Base: Rally all 3
+Seismic Beacon: Enhance all Inhibit 3
+SkyCom Complex: Weaken all 3
+The Spire: Heal all 3
+Tyrolian Outpost: Enhance all Armor 3
+
+// Activation Skills
+Haunting Miasma: Enhance all Enfeeble 1
+Suffocating Miasma: Enhance all Enfeeble 2
+Paralyzing Miasma: Enhance all Enfeeble 3
+Mending Light: Enhance all Heal 1
+Restorative Light: Enhance all Heal 2
+Rejuventating Light: Enhance all Heal 3
+Unbreakable Shield: Enhance all Protect 1
+Indestructible Shield: Enhance all Protect 2
+Immortal Shield: Enhance all Protect 3
+Inspiring Roar: Enhance all Rally 1
+Resounding Roar: Enhance all Rally 2
+Invigorating Roar: Enhance all Rally 3
+Explosive Volley: Enhance all Strike 1
+Deadly Volley: Enhance all Strike 2
+Destructive Volley: Enhance all Strike 3
+Dampening Field: Enhance all Weaken 1
+Containment Field: Enhance all Weaken 2
+Suppression Field: Enhance all Weaken 3
+
+// Defensive Skills
+Fortified Aegis: Enhance all Armor 1
+Reinforced Aegis: Enhance all Armor 2
+Augmented Aegis: Enhance all Armor 3
+Vigorous Retribution: Enhance all Avenge 1
+Enraged Retribution: Enhance all Avenge 2
+Violent Retribution: Enhance all Avenge 3
+Rapid Decay: Enhance all Corrosive 1
+Fervent Decay: Enhance all Corrosive 2
+Volatile Recoil: Enhance all Counter 1
+Erratic Recoil: Enhance all Counter 2
+Eruptive Recoil: Enhance all Counter 3
+
+// Combat-Modifier Skills
+Bolstered Phalanx: Enhance all Legion 1
+Empowered Phalanx: Enhance all Legion 2
+United Phalanx: Enhance all Legion 3
+
+// Damage-Dependent Skills
+Burning Rage: Enhance all Berserk 1
+Fiery Rage: Enhance all Berserk 2
+Thunderous Rage: Enhance all Berserk 3
+Restrictive Bindings: Enhance all Inhibit 1
+Restrictive Chains: Enhance all Inhibit 2
+Restrictive Barrier: Enhance all Inhibit 3
+Blood Siphon: Enhance all Leech 1
+Blood Lust: Enhance all Leech 2
+Blood Frenzy: Enhance all Leech 3
+Noxious Fog: Enhance all Poison 1
+Noxious Mist: Enhance all Poison 2
+Noxious Haze: Enhance all Poison 3

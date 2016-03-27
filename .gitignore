@@ -1,2 +1,11 @@
 obj/**
-tu_optimize
+obj-debug/**
+data/ownedcards_*.txt
+data/customdecks_*.txt
+data/*.etg
+data/cards_section_*.xml
+data/fusion_recipes_cj2.xml
+data/missions.xml
+data/skills_set.xml
+tuo
+tuodebug

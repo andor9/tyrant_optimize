@@ -913,7 +913,10 @@ void hill_climbing(unsigned num_min_iterations, unsigned num_iterations, Deck* d
         std::shuffle(non_commander_cards.begin(), non_commander_cards.end(), re);
         for(const Card* card_candidate: non_commander_cards)
         {
-            if (card_candidate && (card_candidate->m_fusion_level < use_fused_card_level || (use_top_level_card && card_candidate->m_level < card_candidate->m_top_level_card->m_level)))
+            if (card_candidate && (card_candidate->m_fusion_level < use_fused_card_level || (use_top_level_card && card_candidate->m_level < card_candidate->m_top_level_card->m_level))
+                    && ! d1->allowed_candidates.count(card_candidate->m_id))
+            { continue; }
+            if (card_candidate && d1->disallowed_candidates.count(card_candidate->m_id))
             { continue; }
             d1->commander = best_commander;
             d1->cards = best_cards;
@@ -1077,7 +1080,10 @@ void hill_climbing_ordered(unsigned num_min_iterations, unsigned num_iterations,
         std::shuffle(non_commander_cards.begin(), non_commander_cards.end(), re);
         for(const Card* card_candidate: non_commander_cards)
         {
-            if (card_candidate && (card_candidate->m_fusion_level < use_fused_card_level || (use_top_level_card && card_candidate->m_level < card_candidate->m_top_level_card->m_level)))
+            if (card_candidate && (card_candidate->m_fusion_level < use_fused_card_level || (use_top_level_card && card_candidate->m_level < card_candidate->m_top_level_card->m_level))
+                    && ! d1->allowed_candidates.count(card_candidate->m_id))
+            { continue; }
+            if (card_candidate && d1->disallowed_candidates.count(card_candidate->m_id))
             { continue; }
             // Various checks to check if the card is accepted
             assert(!card_candidate || card_candidate->m_type != CardType::commander);
@@ -1161,6 +1167,7 @@ void print_available_effects()
         "  EnduringRage\n"
         "  Fortification\n"
         "  Heroism\n"
+        "  ZealotsPreservation\n"
         "  Metamorphosis\n"
         "  Revenge X\n"
         "  TurningTides\n"
@@ -1229,6 +1236,9 @@ int main(int argc, char** argv)
 	std::string opt_forts, opt_enemy_forts;
     std::string opt_hand, opt_enemy_hand;
     std::string opt_vip;
+    std::string opt_allow_candidates;
+    std::string opt_disallow_candidates;
+    std::string opt_disallow_recipes;
     std::string opt_quest;
     std::string opt_target_score;
     std::vector<std::string> fn_suffix_list{"",};
@@ -1450,6 +1460,21 @@ int main(int argc, char** argv)
         else if(strcmp(argv[argIndex], "vip") == 0)
         {
             opt_vip = argv[argIndex + 1];
+            argIndex += 1;
+        }
+        else if(strcmp(argv[argIndex], "allow-candidates") == 0)
+        {
+            opt_allow_candidates = argv[argIndex + 1];
+            argIndex += 1;
+        }
+        else if(strcmp(argv[argIndex], "disallow-candidates") == 0)
+        {
+            opt_disallow_candidates = argv[argIndex + 1];
+            argIndex += 1;
+        }
+        else if(strcmp(argv[argIndex], "disallow-recipes") == 0)
+        {
+            opt_disallow_recipes = argv[argIndex + 1];
             argIndex += 1;
         }
         else if(strcmp(argv[argIndex], "hand") == 0)  // set initial hand for test
@@ -1723,6 +1748,40 @@ int main(int argc, char** argv)
     catch(const std::runtime_error& e)
     {
         std::cerr << "Error: vip " << opt_vip << ": " << e.what() << std::endl;
+        return 0;
+    }
+
+    try
+    {
+        your_deck->set_allowed_candidates(opt_allow_candidates);
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << "Error: allow-candidates " << opt_allow_candidates << ": " << e.what() << std::endl;
+        return 0;
+    }
+
+    try
+    {
+        your_deck->set_disallowed_candidates(opt_disallow_candidates);
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << "Error: disallow-candidates " << opt_disallow_candidates << ": " << e.what() << std::endl;
+        return 0;
+    }
+
+    try
+    {
+        auto && id_dis_recipes = string_to_ids(all_cards, opt_disallow_recipes, "disallowed-recipes");
+        for (auto & cid : id_dis_recipes.first)
+        {
+            all_cards.cards_by_id[cid]->m_recipe_cards.clear();
+        }
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << "Error: disallow-recipes " << opt_disallow_recipes << ": " << e.what() << std::endl;
         return 0;
     }
 
