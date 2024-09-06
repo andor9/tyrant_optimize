@@ -1,0 +1,48 @@
+// Siege forts
+CS: Corrosive Spore
+LC: Lightning Cannon
+DF: Death Factory
+IA: Inspiring Altar
+SF: Sky Fortress
+DS: Darkspire
+MC: Medical Center
+
+// Defense forts
+TC: Tesla Coil
+MF: Minefield
+FA: Foreboding Archway
+IB: Illuminary Blockade
+FF: Forcefield
+
+// Commanders
+halcyon+: Lord Halcyon
+halcyon++: Imperator Halcyon
+tabitha+: Tabitha Exiled
+tabitha++: Tabitha Liberated
+daedalus+: Daedalus Enraged
+daedalus++: Daedalus Charged
+barracus+: General Barracus
+barracus++: Barracus the Traitor
+typhon+: Typhon the Mad
+typhon++: Typhon the Insane
+silus: Lord Silus
+silus+: Silus the Corrupt
+silus++: Silus the Warlord
+dracorex+: Dracorex Hivelord
+dracorex++: Dracorex Hivegod
+petrisis+: Petrisis the Butcher
+petrisis++: Petrisis Gorefist
+malort+: Malort Blightmind
+malort++: Malort Blightfather
+nexor+: Nexor the Seer
+nexor++: Nexor the Farseer
+krellus+: Conqueror Krellus
+krellus++: Battlemaster Krellus
+kylen+: Invader Kylen
+kylen++: Kylen the Initiator
+alaric+: Sir Alaric
+alaric++: Sir Alaric the Swift
+constantine+: Elder Constantine
+constantine++: Councilor Constantine
+arkadios+: Arkadios Ultra
+arkadios++: Arkadios Ultimate

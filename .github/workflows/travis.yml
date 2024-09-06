@@ -1,0 +1,48 @@
+name: travis
+
+on: [push]
+
+jobs:
+  build:
+    name: ubuntu
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: git fetch --prune --unshallow --tags
+      - run: "./build/windows/requirements.sh"
+      - run: "./build/windows/build.sh"
+      - run: ./update_xml.sh
+      - run: source build/windows/package.sh
+
+      - name: Upload tuo
+        uses: actions/upload-artifact@v3
+        with:
+          name: tuo
+          path: |
+            *.exe
+            *.zip
+      - name: Create Release
+        if: contains(github.ref, 'tags/v')
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: upload windows artifact
+        if: contains(github.ref, 'tags/v')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tuo.zip
+          asset_name: tuo.zip
+          asset_content_type: application/zip

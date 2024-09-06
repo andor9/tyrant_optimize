@@ -1,0 +1,3 @@
+[submodule "extern/hPMML"]
+	path = extern/hPMML
+	url = ../hPMML

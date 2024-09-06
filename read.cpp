@@ -79,7 +79,7 @@ DeckList expand_deck_to_list(std::string deck_name, Decks& decks)
     static std::unordered_set<std::string> expanding_decks;
     if (expanding_decks.count(deck_name))
     {
-        std::cerr << "Warning: circular referred deck: " << deck_name << std::endl;
+        std::cerr << "WARNING: There is a circular referred deck: " << deck_name << std::endl;
         return DeckList();
     }
     auto deck_string = deck_name;
@@ -119,7 +119,7 @@ DeckList expand_deck_to_list(std::string deck_name, Decks& decks)
         expanding_decks.erase(deck_name);
         if (res.size() == 0)
         {
-            std::cerr << "Warning: regular expression matches nothing: /" << regex_string << "/." << std::endl;
+            std::cerr << "WARNING: Regular expression matches nothing: /" << regex_string << "/." << std::endl;
         }
         return normalize(res);
     }
@@ -148,7 +148,7 @@ DeckList parse_deck_list(std::string list_string, Decks& decks)
             }
             catch (const boost::bad_lexical_cast & e)
             {
-                std::cerr << "Warning: Is ':' a typo? Skip deck [" << list_token << "]\n";
+                std::cerr << "WARNING: Is ':' a typo? Skip deck [" << list_token << "]\n";
                 continue;
             }
         }
@@ -195,7 +195,7 @@ void parse_card_spec(const Cards& all_cards, const std::string& card_spec, unsig
         card_id = card_it->second->m_id;
         if (all_cards.ambiguous_names.count(simple_name))
         {
-            std::cerr << "Warning: There are multiple cards named " << card_name << " in cards.xml. [" << card_id << "] is used.\n";
+            std::cerr << "WARNING: There are multiple cards named " << card_name << " in cards.xml. [" << card_id << "] is used.\n";
         }
     }
     else if(card_id_iter != simple_name.end())
@@ -258,7 +258,7 @@ const std::pair<std::vector<unsigned>, std::map<signed, char>> string_to_ids(con
     {
         if (! error_list.empty())
         {
-            std::cerr << "Warning: Ignore some cards while resolving " << description << ": ";
+            std::cerr << "WARNING: Ignore some cards while resolving " << description << ": ";
             for (auto error: error_list)
             {
                 std::cerr << '[' << error << ']';
@@ -310,11 +310,10 @@ unsigned read_card_abbrs(Cards& all_cards, const std::string& filename)
         {
             std::string abbr_string;
             getline(abbr_file, abbr_string);
+            tuo::trim(abbr_string);
             ++num_line;
-            if(abbr_string.size() == 0 || strncmp(abbr_string.c_str(), "//", 2) == 0)
-            {
-                continue;
-            }
+            if (is_line_empty_or_commented(abbr_string))
+            { continue; }
             std::string abbr_name;
             auto abbr_string_iter = read_token(abbr_string.begin(), abbr_string.end(), [](char c){return(c == ':');}, abbr_name);
             if(abbr_string_iter == abbr_string.end() || abbr_name.empty())
@@ -346,6 +345,62 @@ unsigned read_card_abbrs(Cards& all_cards, const std::string& filename)
     return(0);
 }
 
+std::unordered_map<unsigned, unsigned> read_custom_cards(Cards& all_cards, const std::string& filename, bool abort_on_missing=true)
+{
+    std::unordered_map<unsigned, unsigned> cards;
+    if (!boost::filesystem::exists(filename))
+    {
+        if (abort_on_missing)
+        { throw std::runtime_error("Custom cards file " + filename + " does not exist"); }
+        return cards;
+    }
+    std::ifstream cards_file(filename);
+    if (!cards_file.is_open())
+    {
+        if (abort_on_missing)
+        { throw std::runtime_error("Custom cards file " + filename + " could not be opened"); }
+        return cards;
+    }
+    unsigned num_line(0);
+    cards_file.exceptions(std::ifstream::badbit);
+    
+    while(cards_file && !cards_file.eof())
+    {
+	try
+    	{
+            std::string card_spec;
+            getline(cards_file, card_spec);
+            tuo::trim(card_spec);
+            ++num_line;
+            if (is_line_empty_or_commented(card_spec))
+            { continue; }
+            unsigned card_id{0};
+            unsigned card_num{1};
+            char num_sign{0};
+            char mark{0};
+            parse_card_spec(all_cards, card_spec, card_id, card_num, num_sign, mark);
+            cards[card_id] = card_num;
+    	}
+    	catch (std::exception& e)
+    	{
+    	    if (abort_on_missing)
+    	    {
+    	        throw e;
+    	    }
+    	    else
+    	    {
+    	        std::cerr << "Exception while parsing the custom cards file " << filename;
+    	        if (num_line > 0)
+    	        {
+    	            std::cerr << " at line " << num_line;
+    	        }
+    	        std::cerr << ": " << e.what() << ".\n";
+    	    }
+    	}
+    }
+    return cards;
+}
+
 
 // Error codes:
 // 2 -> file not readable
@@ -370,11 +425,10 @@ unsigned load_custom_decks(Decks& decks, Cards& all_cards, const std::string & f
         {
             std::string deck_string;
             getline(decks_file, deck_string);
+            tuo::trim(deck_string);
             ++num_line;
-            if(deck_string.size() == 0 || strncmp(deck_string.c_str(), "//", 2) == 0)
-            {
-                continue;
-            }
+            if (is_line_empty_or_commented(deck_string))
+            { continue; }
             std::string deck_name;
             auto deck_string_iter = read_token(deck_string.begin(), deck_string.end(), [](char c){return(strchr(":,", c));}, deck_name);
             if(deck_string_iter == deck_string.end() || deck_name.empty())
@@ -458,15 +512,14 @@ void read_owned_cards(Cards& all_cards, std::map<unsigned, unsigned>& owned_card
         return;
     }
     unsigned num_line(0);
-    while(owned_file && !owned_file.eof())
+    while (owned_file && !owned_file.eof())
     {
         std::string card_spec;
         getline(owned_file, card_spec);
+        tuo::trim(card_spec);
         ++num_line;
-        if(card_spec.size() == 0 || strncmp(card_spec.c_str(), "//", 2) == 0)
-        {
-            continue;
-        }
+        if (is_line_empty_or_commented(card_spec))
+        { continue; }
         try
         {
             add_owned_card(all_cards, owned_cards, card_spec);
@@ -499,10 +552,8 @@ unsigned read_bge_aliases(std::unordered_map<std::string, std::string> & bge_ali
             std::string bge_string;
             getline(bgefile, bge_string);
             ++num_line;
-            if(bge_string.size() == 0 || strncmp(bge_string.c_str(), "//", 2) == 0)
-            {
-                continue;
-            }
+            if (is_line_empty_or_commented(bge_string))
+            { continue; }
             std::string bge_name;
             auto bge_string_iter = read_token(bge_string.begin(), bge_string.end(), [](char c){return(c == ':');}, bge_name);
             if(bge_string_iter == bge_string.end() || bge_name.empty())

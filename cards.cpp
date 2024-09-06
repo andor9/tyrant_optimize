@@ -47,9 +47,9 @@ Cards::~Cards()
 const Card* Cards::by_id(unsigned id) const
 {
     const auto cardIter = cards_by_id.find(id);
-    if(cardIter == cards_by_id.end())
+    if (cardIter == cards_by_id.end())
     {
-        throw std::runtime_error("No card with id " + to_string(id));
+        throw std::runtime_error("No card with id " + tuo::to_string(id));
     }
     else
     {
@@ -66,12 +66,13 @@ void Cards::organize()
     player_assaults.clear();
     player_structures.clear();
     // Round 1: set cards_by_id
-    for(Card* card: all_cards)
+    for (Card* card: all_cards)
     {
         cards_by_id[card->m_id] = card;
     }
+
     // Round 2: depend on cards_by_id / by_id(); update m_name, [TU] m_top_level_card etc.; set cards_by_name; 
-    for(Card* card: all_cards)
+    for (Card* card: all_cards)
     {
         // Remove delimiters from card names
         size_t pos;
@@ -85,33 +86,55 @@ void Cards::organize()
         std::string base_name = card->m_name;
         if (card == card->m_top_level_card)
         {
-            add_card(card, card->m_name + "-" + to_string(card->m_level));
+            add_card(card, card->m_name + "-" + tuo::to_string(card->m_level));
         }
         else
         {
-            card->m_name += "-" + to_string(card->m_level);
+            card->m_name += "-" + tuo::to_string(card->m_level);
         }
         add_card(card, card->m_name);
     }
-#if 0 // TODO refactor precedence
-    // Round 3: depend on cards_by_name; set abbreviations
-    for(Card* card: cards)
+
+    // Round 3: depend on summon skill card_id check that card_id
+    for (Card* card: all_cards)
     {
-        // generate abbreviations
-        if(card->m_set > 0)
+        unsigned summon_card_id(card->m_skill_value[Skill::summon]);
+        if (!summon_card_id) { continue; }
+        if (!cards_by_id[summon_card_id])
         {
-            for(auto&& abbr_name : get_abbreviations(card->m_name))
-            {
-                if(abbr_name.length() > 1 && cards_by_name.find(abbr_name) == cards_by_name.end())
-                {
-                    player_cards_abbr[abbr_name] = card->m_name;
-                }
-            }
+            std::cerr << "WARNING: Card [" << card->m_id << "] (" << card->m_name
+                << ") summons an unknown card [" << summon_card_id << "] (removing invalid skill Summon)" << std::endl;
+            std::remove_if(card->m_skills.begin(), card->m_skills.end(), [](const SkillSpec& ss) {return ss.id == Skill::summon;});
+            card->m_skill_value[Skill::summon] = 0;
         }
     }
-#endif
-}
+    //Test
+    //Round 4: sort cards by id
+    struct { bool operator()(Card* a, Card* b) const {return a->m_id < b->m_id;}} idsort;
+    std::sort(all_cards.begin(),all_cards.end(),idsort);
 
+
+}
+//------------------------------------------------------------------------------
+void Cards::fix_dominion_recipes()
+{
+    for (Card* card: all_cards)
+    {
+        if (card->m_category != CardCategory::dominion_alpha)
+        { continue; }
+        std::map<const Card*, unsigned> dom_cost = dominion_cost[card->m_fusion_level][card->m_level];
+        for (auto recipe_it : dom_cost)
+        {
+            // except basic Alpha Dominion (id 50001 & 50002 for lvl 1 & 2 respectively)
+            if ((card->m_id != 50001) && (card->m_id != 50002))
+            {
+                card->m_recipe_cards[recipe_it.first] += recipe_it.second;
+            }
+        }
+        card->m_recipe_cost = 0; // no SP required
+    }
+}
+//------------------------------------------------------------------------------
 void Cards::add_card(Card * card, const std::string & name)
 {
     std::string simple_name{simplify_name(name)};
@@ -130,9 +153,9 @@ void Cards::add_card(Card * card, const std::string & name)
     {
         ambiguous_names.erase(simple_name);
         cards_by_name[simple_name] = card;
-        if (new_visible)
+        if (new_visible && !player_cards.count(card))
         {
-            player_cards.push_back(card);
+            player_cards.emplace(card);
             switch(card->m_type)
             {
                 case CardType::commander: {
@@ -156,18 +179,47 @@ void Cards::add_card(Card * card, const std::string & name)
     }
 }
 
-// class Card
-void Card::add_skill(Skill id, unsigned x, Faction y, unsigned n, unsigned c, Skill s, Skill s2, bool all)
+void Cards::erase_fusion_recipe(unsigned id)
 {
-    for(auto it = m_skills.begin(); it != m_skills.end(); ++ it)
-    {
-        if(it->id == id)
-        {
-            m_skills.erase(it);
-            break;
-        }
-    }
-    m_skills.push_back({id, x, y, n, c, s, s2, all});
-    m_skill_value[id] = x ? x : n ? n : 1;
+    cards_by_id[by_id(id)->m_base_id]->m_recipe_cards.clear();
 }
 
+// class Card
+void Card::add_skill(Skill::Trigger trigger, Skill::Skill id, unsigned x, Faction y, unsigned n, unsigned c, Skill::Skill s, Skill::Skill s2, bool all, unsigned card_id)
+{
+    std::vector<SkillSpec>* storage(nullptr);
+    switch (trigger)
+    {
+    case Skill::Trigger::activate:
+        storage = &m_skills;
+        break;
+    case Skill::Trigger::play:
+        storage = &m_skills_on_play;
+        break;
+    //APN
+    case Skill::Trigger::attacked:
+        storage = &m_skills_on_attacked;
+        break;
+    case Skill::Trigger::death:
+        storage = &m_skills_on_death;
+        break;
+    default:
+        _DEBUG_ASSERT(false);
+        __builtin_unreachable();
+    }
+    assert(storage);
+    // remove previous copy of such skill.id
+    {
+        auto pred = [id](const SkillSpec& ss) { return ss.id == id; };
+        m_skills.erase(std::remove_if(m_skills.begin(), m_skills.end(), pred), m_skills.end());
+        m_skills_on_play.erase(std::remove_if(m_skills_on_play.begin(), m_skills_on_play.end(), pred), m_skills_on_play.end());
+        m_skills_on_death.erase(std::remove_if(m_skills_on_death.begin(), m_skills_on_death.end(), pred), m_skills_on_death.end());
+        //APN
+        m_skills_on_attacked.erase(std::remove_if(m_skills_on_attacked.begin(), m_skills_on_attacked.end(), pred), m_skills_on_attacked.end());
+    }
+    // add a new one
+    storage->push_back({id, x, y, n, c, s, s2, all, card_id});
+    // setup value
+    m_skill_value[id] = x ? x : n ? n : card_id ? card_id : 1;
+    m_skill_trigger[id] = trigger;
+}

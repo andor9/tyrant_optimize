@@ -1,0 +1,8 @@
+##
+## save this file as ~/.tuo.login-mapping
+##
+
+declare -A LOGIN_MAPPING=(
+    [dzheika]='dsuchka'
+    #[your_login]='TU user name'
+)

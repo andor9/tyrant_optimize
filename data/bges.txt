@@ -1,0 +1,164 @@
+// Guild War BGEs
+//Artillery: Enhance Mortar 100; Mortar all 70
+Artillery: Mortar all 70
+Divine Blessing: Heal all 120; Rally all 120; Strike all 120
+//Winter Tempest: Enhance all subdue 999; Protect All 100; Weaken All 100
+Winter Tempest: Protect All 100; Weaken All 100
+Charged Up: Overload all
+Progenitor Tech: Heal all 40; Protect all 40; Rally all 40; Enfeeble all 40; Strike all 40; Weaken all 40
+Plasma Burst: Heal all 60; Protect all 60; Sunder 60
+Tartarian Gift: Rally all 120; Enrage all 120
+//Combined Arms: Enhance All Coalition 70; Rally all 75; Enfeeble all 75; Strike all 75
+Combined Arms: Rally all 75; Enfeeble all 75; Strike all 75
+Inspired: Rally all 200
+Blightblast: Enfeeble all 300
+Emergency Aid: Heal All 70; Protect all 70; Enhance all Absorb 999
+Landmine: Entrap all 200; Weaken all 200
+//Triage: Enhance all Fortify 250; Heal 170; Protect 170
+Triage: Heal 170; Protect 170
+Mirror Madness: Mimic 700; Entrap all 100
+Surgical Strike: Mortar 150; Strike 200; Weaken 200
+Apocalypse: Mortar all 75; Enfeeble all 75; Strike all 75
+Minor Setback: Weaken 170; Strike 170; Mimic 170
+//Entrapment: Enhance all Counter 400; Entrap 50; Heal 50
+Entrapment: Entrap 50; Heal 50
+
+// Weird BGEs we will never ever see again
+Sulfuris Essence: Evolve All Poison Venom; Enhance All Venom 6
+Way of the Forsaken: Enhance All Corrosive 8; Heal All Raider 7; Enfeeble 7
+Critical Blast: Enhance All Swipe 4; Enfeeble All 4
+Will of the Nephilim: Enhance All Avenge 5; Protect All Bloodthirsty 4; Heal All Righteous 6
+Armada's Conquest: Enhance All Evade 4; Rally All Xeno 6; Mortar 10
+Eternal Backlash: Enhance All Counter 6; Entrap 6
+//Orbital Cannon: Strike 16
+Orbital Cannon: Enfeeble 14
+Bloodthirst: Enhance All Leech 6
+Diminisher: Sunder all 2
+Halcyon's Command: Enhance All Armor 8; Heal All Imperial 10; Enrage Imperial 4
+Typhon's Blood: Enhance All Refresh 8; Enrage All Bloodthirsty 5; Heal 16
+Extended Reach: Enhance All Swipe 5
+Bombing Run: Strike all 3
+Blitzkrieg: Rush
+Paladin's Presence: Protect all 3
+Viral Warfare: Enhance all Poison 3
+Opalescence: Heal+Protect all 2
+Power Source: Overload 1
+Ferocity: Enrage 6
+
+// Some other BGEs
+Soothing Chant: Heal all 2
+Noxious Arena: Enfeeble all 2
+Bathe in Blood: Bloodlust 2
+Fervorous Revenge: Revenge 3
+Camaraderie: Enhance All Coalition 3
+
+// Conquest Zones
+// --
+Asphodel Nexus:
+NexusResonance:
+// --
+Phobos Station: Orbital Bombardment
+Orbital Bombardment: Strike all 3; Siege all 5
+// --
+The Spire: Imperial Domain
+Imperial Domain: Heal all 7
+// --
+SkyCom Complex: Network Interference
+Network Interference: Weaken all 6
+// --
+Mech Graveyard: Scrap Field
+Scrap Field: Evolve 2 Pierce Rupture
+// --
+Seismic Beacon: HaltedOrders
+// --
+Enclave Landing: Brigade
+// --
+Andar Quarantine: Andar Isolation
+Andar Isolation: Evolve Weaken Sunder
+// --
+Baron's Claw Labs: Virulence
+// --
+Colonial Relay: CriticalReach
+// --
+Borean Forges: Fortification
+// --
+Brood Nest: Blighted Swamps
+Blighted Swamps: Enfeeble all 4
+// --
+Cleave Rock: Splinter Legacy
+Splinter Legacy: Enhance all Berserk 4
+// --
+Elder Port: Oath-of-Loyalty
+// --
+Infested Depot: Devour
+// --
+Jotun's Pantheon: Jotun's Presence
+Jotun's Presence: Protect all 4
+// --
+Magma Foundry: Volcanic Rain
+Volcanic Rain: Strike all 5
+// --
+Malort's Den: Lethal Spores
+Lethal Spores: Enhance all Venom 5
+// --
+Norhaven: Storm Shelters
+Storm Shelters: Enhance all Evade 3
+// --
+Red Maw Base: Red Maw Barracks
+Red Maw Barracks: Rally all 5
+// --
+Tyrolian Outpost: IronWill
+// --
+Ashrock Redoubt: Counterflux
+
+// Activation Skills
+Haunting Miasma: Enhance all Enfeeble 1
+Suffocating Miasma: Enhance all Enfeeble 2
+Paralyzing Miasma: Enhance all Enfeeble 3
+Mending Light: Enhance all Heal 1
+Restorative Light: Enhance all Heal 2
+Rejuventating Light: Enhance all Heal 3
+Unbreakable Shield: Enhance all Protect 1
+Indestructible Shield: Enhance all Protect 2
+Immortal Shield: Enhance all Protect 3
+Inspiring Roar: Enhance all Rally 1
+Resounding Roar: Enhance all Rally 2
+Invigorating Roar: Enhance all Rally 3
+Explosive Volley: Enhance all Strike 1
+Deadly Volley: Enhance all Strike 2
+Destructive Volley: Enhance all Strike 3
+Dampening Field: Enhance all Weaken 1
+Containment Field: Enhance all Weaken 2
+Suppression Field: Enhance all Weaken 3
+
+// Defensive Skills
+Fortified Aegis: Enhance all Armor 1
+Reinforced Aegis: Enhance all Armor 2
+Augmented Aegis: Enhance all Armor 3
+Vigorous Retribution: Enhance all Avenge 1
+Enraged Retribution: Enhance all Avenge 2
+Violent Retribution: Enhance all Avenge 3
+Rapid Decay: Enhance all Corrosive 1
+Fervent Decay: Enhance all Corrosive 2
+Volatile Recoil: Enhance all Counter 1
+Erratic Recoil: Enhance all Counter 2
+Eruptive Recoil: Enhance all Counter 3
+
+// Combat-Modifier Skills
+Bolstered Phalanx: Enhance all Legion 1
+Empowered Phalanx: Enhance all Legion 2
+United Phalanx: Enhance all Legion 3
+
+// Damage-Dependent Skills
+Burning Rage: Enhance all Berserk 1
+Fiery Rage: Enhance all Berserk 2
+Thunderous Rage: Enhance all Berserk 3
+Restrictive Bindings: Enhance all Inhibit 1
+Restrictive Chains: Enhance all Inhibit 2
+Restrictive Barrier: Enhance all Inhibit 3
+Blood Siphon: Enhance all Leech 1
+Blood Lust: Enhance all Leech 2
+Blood Frenzy: Enhance all Leech 3
+Noxious Fog: Enhance all Poison 1
+Noxious Mist: Enhance all Poison 2
+Noxious Haze: Enhance all Poison 3

@@ -1,0 +1,31 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+ test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: install
+      run: |
+        sudo apt-get update
+        sudo apt-get --yes install g++ make cmake libboost-all-dev lcov
+    - name: build
+      run: make debug && make test
+    - name: xml fetch
+      run: ./update_xml.sh
+    - name: test
+      run: ./tuo-test --log_level=message
+    - name: lcov
+      run: |
+       lcov -b . -d . -o coverage.output --capture
+       lcov --remove coverage.output '/usr/include/*' './include/*' '/usr/lib/*' -o coverage.output
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.output

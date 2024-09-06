@@ -1,0 +1,42 @@
+//Bugs/Fix
+Tributed On-Attacked-Rally during enemy turn on a cooldown card -> (Impact by now == 0, but it is wrong)
+Flying units don't get mark stacks in tuo, but should get them -> no impact
+Enhance Bravery/Absorb on comamnders?
+
+brawl-defense:
+improve brawl formula for guild brawl (exclude fortresses?)?
+
+//Testing
+
+
+?getting Subdued w/o dealt damage?
+Add more single unit test cases
+Add more whole deck unit test cases
+
+Test single skills with mocking-framework or similar
+
+//Check
+Check all changed skills one by one
+Check overall order of card-reduction with summon + on-play skills killing enemies + following enemy index update
+On-Play 0-delay Summon timings
+Heroism consistency
+
+
+mimic no on-play skills
+Summon-0-delay card  => new card with summon /valor
+bg_effects fd->tapi vs card->tapi
+on-death-attacked-summoned cards valid strike/enf.. targets
+enfeeble active how long and on whoms turn
+
+//Impl
+Avoid reloading xmls (e.g. all_cards) for each unit_test in tyrant_optimize::run(...).
+
+//Var
+
+
+//Ideas
+rule/enemy-based order
+state-attacking += state-skills-active
+OpenACC, OpenMP, MPI, OpenGL, CUDA support?
+Neuronal Network/Maschine Learning playing order (== flex).
+Continous Mode to avoid reloading XMLs when used by an external prog.
